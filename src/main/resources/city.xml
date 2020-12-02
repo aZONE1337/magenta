@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cityAndDistance>
+    <city id="1" name="A">
+        <latitude>50.312513</latitude>
+        <longitude>38.023141</longitude>
+    </city>
+    <city id="5" name="B">
+        <latitude>51.0235231</latitude>
+        <longitude>37.1241241</longitude>
+    </city>
+    <distance id="15" distance="101.31513004428977">
+        <cityFrom>1</cityFrom>
+        <cityTo>5</cityTo>
+    </distance>
+</cityAndDistance>
