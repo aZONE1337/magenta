@@ -19,7 +19,7 @@ public class DistanceCalculator {
     //so l is 6371.0km (avg)
     private static final double l = 6371.008;
 
-    public static double calculateCrowFlight(CityEntity from, CityEntity to) {
+    public static double calculateStraight(CityEntity from, CityEntity to) {
         if (from == null || to == null)
             throw new EmptyCityPassed("Can't process calculations. One of cities is null");
 
@@ -46,7 +46,7 @@ public class DistanceCalculator {
 
     //calculates shortest path
     //graph creating logic in GraphLoader class
-    public static double calculateDistanceMatrix(CityEntity from, CityEntity to, Graph<Integer, DefaultWeightedEdge> graph) {
+    public static double calculateByMatrix(CityEntity from, CityEntity to, Graph<Integer, DefaultWeightedEdge> graph) {
         if (from == null || to == null)
             throw new EmptyCityPassed("Can't process calculations. One of cities is null");
 

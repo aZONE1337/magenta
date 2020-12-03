@@ -9,7 +9,6 @@ import ru.magenta.util.CityAndDistance;
 import ru.magenta.util.DistanceCalculator;
 import ru.magenta.entity.CityEntity;
 import ru.magenta.entity.DistanceEntity;
-import ru.magenta.exception.DifferentListSizeArguments;
 import ru.magenta.service.CityDataAccess;
 import ru.magenta.service.DistanceDataAccess;
 import ru.magenta.util.GraphLoader;
@@ -88,10 +87,11 @@ public class CalculatorResource {
         List<String> matrixCalcResp = new ArrayList<>();
         matrixCalcResp.add("Distance matrix results:\n");
 
-        if (type.equalsIgnoreCase("crowflight")) {
+        if (type.equalsIgnoreCase("straight")) {
             for (int i = 0; i < shortest; i++) {
-                crowFlightResp.add(
-                        DistanceCalculator.calculateCrowFlight(
+                crowFlightResp.add("from(id): " + citiesFrom.get(i).getId()
+                        + ", to(id): " + citiesTo.get(i).getId()
+                        + ", distance: " + DistanceCalculator.calculateStraight(
                                 citiesFrom.get(i),
                                 citiesTo.get(i)
                         ) + "\n");
@@ -101,10 +101,11 @@ public class CalculatorResource {
                     .build();
         }
 
-        if (type.equalsIgnoreCase("datamatrix")) {
+        if (type.equalsIgnoreCase("matrix")) {
             for (int i = 0; i < shortest; i++) {
-                matrixCalcResp.add(
-                        DistanceCalculator.calculateDistanceMatrix(
+                matrixCalcResp.add("from(id): " + citiesFrom.get(i).getId()
+                        + ", to(id): " + citiesTo.get(i).getId()
+                        + ", distance: " + DistanceCalculator.calculateByMatrix(
                                 citiesFrom.get(i),
                                 citiesTo.get(i),
                                 graph
@@ -115,7 +116,7 @@ public class CalculatorResource {
                     .build();
         }
 
-        //returns both if type is not defined or any word but "datamatrix"/"crowflight"
+        //returns both if type is not defined or any word but "matrix"/"straight"
         return Response
                 .ok()
                 .entity(crowFlightResp)
