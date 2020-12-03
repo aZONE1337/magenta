@@ -2,14 +2,11 @@ package ru.magenta.util;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
-import org.jgrapht.alg.interfaces.AStarAdmissibleHeuristic;
-import org.jgrapht.alg.shortestpath.AStarShortestPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import ru.magenta.entity.CityEntity;
 import ru.magenta.exception.EmptyCityPassed;
 import ru.magenta.exception.UnreachablePoint;
-import ru.magenta.service.DistanceDataAccess;
 
 public class DistanceCalculator {
     //all formulas can be found on https://en.wikipedia.org/wiki/Great-circle_distance
