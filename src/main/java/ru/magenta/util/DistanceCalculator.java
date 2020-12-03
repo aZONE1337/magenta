@@ -53,9 +53,8 @@ public class DistanceCalculator {
 
         GraphPath<Integer, DefaultWeightedEdge> shortestPath = dijkstra.getPath(from.getId(), to.getId());
 
-        if (shortestPath == null) {
+        if (shortestPath == null)
             throw new UnreachablePoint("There's no shortest path from " + from.getName() + " to " + to.getName());
-        }
 
         distance = shortestPath.getWeight();
 

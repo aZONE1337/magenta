@@ -89,6 +89,6 @@ public class CityEntity {
 
     @Override
     public String toString() {
-        return "<cityEntity id=\"" + id + "\" name=\"" + name + "\"></cityEntity>";
+        return "<city id=\"" + id + "\" name=\"" + name + "\"></city>";
     }
 }

@@ -34,6 +34,7 @@ public class CityDataAccess implements EntityDataAccess<Integer, CityEntity> {
 
             transaction.commit();
         } catch (HibernateException e) {
+            e.printStackTrace();
             if (transaction != null) transaction.rollback();
         }
 
@@ -52,6 +53,7 @@ public class CityDataAccess implements EntityDataAccess<Integer, CityEntity> {
 
             transaction.commit();
         } catch (HibernateException e) {
+            e.printStackTrace();
             if (transaction != null) transaction.rollback();
         }
 
@@ -69,6 +71,7 @@ public class CityDataAccess implements EntityDataAccess<Integer, CityEntity> {
 
             transaction.commit();
         } catch (HibernateException e) {
+            e.printStackTrace();
             if (transaction != null) transaction.rollback();
         }
     }
@@ -90,6 +93,7 @@ public class CityDataAccess implements EntityDataAccess<Integer, CityEntity> {
 
             transaction.commit();
         } catch (HibernateException e) {
+            e.printStackTrace();
             if (transaction != null) transaction.rollback();
         }
     }
@@ -107,6 +111,7 @@ public class CityDataAccess implements EntityDataAccess<Integer, CityEntity> {
 
             transaction.commit();
         } catch (HibernateException e) {
+            e.printStackTrace();
             if (transaction != null) transaction.rollback();
         }
     }

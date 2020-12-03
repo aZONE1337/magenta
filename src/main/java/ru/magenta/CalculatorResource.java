@@ -5,6 +5,9 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import ru.magenta.exception.EmptyCityPassed;
+import ru.magenta.exception.EmptyDistanceListPassed;
+import ru.magenta.exception.UnreachablePoint;
 import ru.magenta.util.CityAndDistance;
 import ru.magenta.util.DistanceCalculator;
 import ru.magenta.entity.CityEntity;
@@ -89,12 +92,16 @@ public class CalculatorResource {
 
         if (type.equalsIgnoreCase("straight")) {
             for (int i = 0; i < shortest; i++) {
-                crowFlightResp.add("from(id): " + citiesFrom.get(i).getId()
-                        + ", to(id): " + citiesTo.get(i).getId()
-                        + ", distance: " + DistanceCalculator.calculateStraight(
-                                citiesFrom.get(i),
-                                citiesTo.get(i)
-                        ) + "\n");
+                try {
+                    crowFlightResp.add("from(id): " + citiesFrom.get(i).getId()
+                            + ", to(id): " + citiesTo.get(i).getId()
+                            + ", distance: " + DistanceCalculator.calculateStraight(
+                            citiesFrom.get(i),
+                            citiesTo.get(i)
+                    ) + "\n");
+                } catch (EmptyCityPassed e) {
+                    return Response.status(400).build();
+                }
             }
             return Response.ok()
                     .entity(crowFlightResp)
@@ -103,13 +110,17 @@ public class CalculatorResource {
 
         if (type.equalsIgnoreCase("matrix")) {
             for (int i = 0; i < shortest; i++) {
-                matrixCalcResp.add("from(id): " + citiesFrom.get(i).getId()
-                        + ", to(id): " + citiesTo.get(i).getId()
-                        + ", distance: " + DistanceCalculator.calculateByMatrix(
-                                citiesFrom.get(i),
-                                citiesTo.get(i),
-                                graph
-                        ) + "\n");
+                try {
+                    matrixCalcResp.add("from(id): " + citiesFrom.get(i).getId()
+                            + ", to(id): " + citiesTo.get(i).getId()
+                            + ", distance: " + DistanceCalculator.calculateByMatrix(
+                            citiesFrom.get(i),
+                            citiesTo.get(i),
+                            graph
+                    ) + "\n");
+                } catch (EmptyCityPassed | UnreachablePoint e) {
+                    return Response.status(400).build();
+                }
             }
             return Response.ok()
                     .entity(matrixCalcResp)
@@ -155,12 +166,13 @@ public class CalculatorResource {
                 file.append(Arrays.toString(IOUtils.toByteArray(in)));
             } catch (IOException e) {
                 e.printStackTrace();
+                return Response.status(400).build();
             }
         }
 
         //unmarshal uploaded file
         CityAndDistance container = (CityAndDistance) unmarshaller.unmarshal(
-                new StringReader(file.toString()));
+                    new StringReader(file.toString()));
 
         for (CityEntity city : container.getCities()) {
             cityDAO.save(city);
