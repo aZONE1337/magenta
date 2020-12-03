@@ -3,13 +3,16 @@ package ru.magenta;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import ru.magenta.backend.CityAndDistance;
-import ru.magenta.backend.DistanceCalculator;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import ru.magenta.util.CityAndDistance;
+import ru.magenta.util.DistanceCalculator;
 import ru.magenta.entity.CityEntity;
 import ru.magenta.entity.DistanceEntity;
 import ru.magenta.exception.DifferentListSizeArguments;
 import ru.magenta.service.CityDataAccess;
 import ru.magenta.service.DistanceDataAccess;
+import ru.magenta.util.GraphLoader;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -28,12 +31,15 @@ import java.util.Map;
 
 @Path("/calculator")
 public class CalculatorResource {
+    GraphLoader graphLoader = GraphLoader.getInstance(true);
+
     @GET
     @Path("/getAll")
     @Produces(MediaType.APPLICATION_XML)
     public Response getAllCities() {
         List<CityEntity> cities = CityDataAccess.getInstance().getAll();
 
+        //preparing XML-type response
         StringBuilder response = new StringBuilder("<cities>");
         for (CityEntity city : cities) {
             response.append(city.toString());
@@ -47,12 +53,21 @@ public class CalculatorResource {
     @Path("/calculate")
     @Produces(MediaType.TEXT_PLAIN)
     public Response calculateDistance(@QueryParam("type") String type,
+                                      @QueryParam("reload") boolean reload,
                                       @QueryParam("from") final List<Integer> from,
                                       @QueryParam("to") final List<Integer> to) {
-        if (from.size() != to.size()) {
-            throw new DifferentListSizeArguments("Lists of cities have different sizes. Must be the same.");
-        }
 
+        //determines the shortest list to trim by it
+        int shortest = Math.min(from.size(), to.size());
+
+        //reloads data from db to graph if needed
+        if (reload)
+            graphLoader = GraphLoader.getInstance(true);
+
+        Graph<Integer, DefaultWeightedEdge> graph = graphLoader.getGraph();
+
+
+        //preparing lists with objects to process calculations
         CityDataAccess service = CityDataAccess.getInstance();
 
         List<CityEntity> citiesFrom = new ArrayList<>();
@@ -66,6 +81,7 @@ public class CalculatorResource {
             citiesTo.add(service.get(id));
         }
 
+        //preparing responses for both types
         List<String> crowFlightResp = new ArrayList<>();
         crowFlightResp.add("Crowflight calculation results:\n");
 
@@ -73,7 +89,7 @@ public class CalculatorResource {
         matrixCalcResp.add("Distance matrix results:\n");
 
         if (type.equalsIgnoreCase("crowflight")) {
-            for (int i = 0; i < citiesFrom.size(); i++) {
+            for (int i = 0; i < shortest; i++) {
                 crowFlightResp.add(
                         DistanceCalculator.calculateCrowFlight(
                                 citiesFrom.get(i),
@@ -86,11 +102,12 @@ public class CalculatorResource {
         }
 
         if (type.equalsIgnoreCase("datamatrix")) {
-            for (int i = 0; i < citiesFrom.size(); i++) {
+            for (int i = 0; i < shortest; i++) {
                 matrixCalcResp.add(
                         DistanceCalculator.calculateDistanceMatrix(
                                 citiesFrom.get(i),
-                                citiesTo.get(i)
+                                citiesTo.get(i),
+                                graph
                         ) + "\n");
             }
             return Response.ok()
@@ -98,6 +115,7 @@ public class CalculatorResource {
                     .build();
         }
 
+        //returns both if type is not defined or any word but "datamatrix"/"crowflight"
         return Response
                 .ok()
                 .entity(crowFlightResp)
@@ -114,15 +132,18 @@ public class CalculatorResource {
 
         StringBuilder file = new StringBuilder();
 
+        //preparing unmarshaller
         JAXBContext context = JAXBContext.newInstance(CityAndDistance.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
 
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
 
+        //saving file name if needed
 //        String fileName = uploadForm.get("fileName").get(0).getBodyAsString();
 
         List<InputPart> inputParts = uploadForm.get("Attachment");
 
+        //building file
         for (InputPart inputPart : inputParts) {
             try {
                 @SuppressWarnings("unused")
@@ -136,6 +157,7 @@ public class CalculatorResource {
             }
         }
 
+        //unmarshal uploaded file
         CityAndDistance container = (CityAndDistance) unmarshaller.unmarshal(
                 new StringReader(file.toString()));
 
@@ -146,6 +168,9 @@ public class CalculatorResource {
         for (DistanceEntity distance : container.getDistances()) {
             distanceDAO.save(distance);
         }
+
+        //updates graph
+        graphLoader = GraphLoader.getInstance(true);
 
         return Response.ok().build();
     }

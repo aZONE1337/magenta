@@ -1,4 +1,4 @@
-package ru.magenta.backend;
+package ru.magenta.util;
 
 import ru.magenta.entity.CityEntity;
 import ru.magenta.entity.DistanceEntity;

@@ -3,10 +3,8 @@ package ru.magenta.service;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import ru.magenta.backend.HibernateFactory;
-import ru.magenta.entity.CityEntity;
+import ru.magenta.util.HibernateFactory;
 import ru.magenta.entity.DistanceEntity;
-import ru.magenta.exception.NoSuchDistanceMatrixRecord;
 
 import java.util.List;
 
@@ -19,7 +17,7 @@ public class DistanceDataAccess implements EntityDataAccess<Integer, DistanceEnt
 
     public static synchronized DistanceDataAccess getInstance() {
         if (instance == null) {
-            return new DistanceDataAccess();
+            instance = new DistanceDataAccess();
         }
         return instance;
     }
@@ -113,38 +111,4 @@ public class DistanceDataAccess implements EntityDataAccess<Integer, DistanceEnt
         }
     }
 
-    public double getDistance(CityEntity from, CityEntity to) {
-        Transaction transaction = null;
-        double distance = 0;
-
-        try (Session session = HibernateFactory.getSession()) {
-            transaction = session.beginTransaction();
-
-            int idFrom = from.getId();
-            int idTo = to.getId();
-
-            String sql = "SELECT distance " +
-                    "FROM distance " +
-                    "WHERE city_from = " + idFrom + " " +
-                    "AND city_to = " + idTo;
-
-            List result = session.createSQLQuery(sql).list();
-
-            if (result.size() > 1) {
-                throw new HibernateException("Returned more than 1 row");
-            }
-
-            if (result == null) {
-                throw new NoSuchDistanceMatrixRecord("No records in Distance Matrix about these arguments");
-            }
-
-            distance = (Double) result.get(0);
-
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) transaction.rollback();
-        }
-
-        return distance;
-    }
 }

@@ -4,12 +4,92 @@
         <latitude>50.312513</latitude>
         <longitude>38.023141</longitude>
     </city>
-    <city id="5" name="B">
+    <city id="2" name="B">
         <latitude>51.0235231</latitude>
         <longitude>37.1241241</longitude>
     </city>
-    <distance id="15" distance="101.31513004428977">
+    <city id="3" name="С">
+        <latitude>51.0235231</latitude>
+        <longitude>37.1241241</longitude>
+    </city>
+    <city id="4" name="D">
+        <latitude>51.0235231</latitude>
+        <longitude>37.1241241</longitude>
+    </city>
+    <city id="5" name="E">
+        <latitude>51.0235231</latitude>
+        <longitude>37.1241241</longitude>
+    </city>
+    <city id="6" name="F">
+        <latitude>51.0235231</latitude>
+        <longitude>37.1241241</longitude>
+    </city>
+    <city id="7" name="G">
+        <latitude>51.0235231</latitude>
+        <longitude>37.1241241</longitude>
+    </city>
+    <city id="8" name="H">
+        <latitude>51.0235231</latitude>
+        <longitude>37.1241241</longitude>
+    </city>
+    <city id="9" name="I">
+        <latitude>51.0235231</latitude>
+        <longitude>37.1241241</longitude>
+    </city>
+    <city id="10" name="J">
+        <latitude>51.0235231</latitude>
+        <longitude>37.1241241</longitude>
+    </city>
+    <city id="11" name="K">
+        <latitude>51.0235231</latitude>
+        <longitude>37.1241241</longitude>
+    </city>
+    <city id="12" name="L">
+        <latitude>51.0235231</latitude>
+        <longitude>37.1241241</longitude>
+    </city>
+    <distance id="1" distance="100">
         <cityFrom>1</cityFrom>
+        <cityTo>2</cityTo>
+    </distance>
+    <distance id="2" distance="100">
+        <cityFrom>2</cityFrom>
+        <cityTo>3</cityTo>
+    </distance>
+    <distance id="3" distance="100">
+        <cityFrom>3</cityFrom>
+        <cityTo>4</cityTo>
+    </distance>
+    <distance id="4" distance="100">
+        <cityFrom>4</cityFrom>
         <cityTo>5</cityTo>
+    </distance>
+    <distance id="5" distance="100">
+        <cityFrom>5</cityFrom>
+        <cityTo>6</cityTo>
+    </distance>
+    <distance id="6" distance="100">
+        <cityFrom>6</cityFrom>
+        <cityTo>7</cityTo>
+    </distance>
+    <distance id="7" distance="100">
+        <cityFrom>7</cityFrom>
+        <cityTo>8</cityTo>
+    </distance>
+    <distance id="8" distance="100">
+        <cityFrom>8</cityFrom>
+        <cityTo>9</cityTo>
+    </distance>
+    <distance id="9" distance="100">
+        <cityFrom>9</cityFrom>
+        <cityTo>10</cityTo>
+    </distance>
+    <distance id="10" distance="100">
+        <cityFrom>10</cityFrom>
+        <cityTo>11</cityTo>
+    </distance>
+    <distance id="11" distance="100">
+        <cityFrom>11</cityFrom>
+        <cityTo>12</cityTo>
     </distance>
 </cityAndDistance>

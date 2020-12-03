@@ -3,7 +3,7 @@ package ru.magenta.service;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import ru.magenta.backend.HibernateFactory;
+import ru.magenta.util.HibernateFactory;
 import ru.magenta.entity.CityEntity;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public class CityDataAccess implements EntityDataAccess<Integer, CityEntity> {
 
     public static synchronized CityDataAccess getInstance() {
         if (instance == null) {
-            return new CityDataAccess();
+            instance = new CityDataAccess();
         }
         return instance;
     }
