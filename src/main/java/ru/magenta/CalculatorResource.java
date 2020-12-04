@@ -90,7 +90,7 @@ public class CalculatorResource {
         List<String> matrixCalcResp = new ArrayList<>();
         matrixCalcResp.add("Distance matrix results:\n");
 
-        if (type.equalsIgnoreCase("straight")) {
+        if (type.equalsIgnoreCase("straight") || type.equalsIgnoreCase("all")) {
             for (int i = 0; i < shortest; i++) {
                 try {
                     crowFlightResp.add("from(id): " + citiesFrom.get(i).getId()
@@ -103,12 +103,9 @@ public class CalculatorResource {
                     return Response.status(400).build();
                 }
             }
-            return Response.ok()
-                    .entity(crowFlightResp)
-                    .build();
         }
 
-        if (type.equalsIgnoreCase("matrix")) {
+        if (type.equalsIgnoreCase("matrix") || type.equalsIgnoreCase("all")) {
             for (int i = 0; i < shortest; i++) {
                 try {
                     matrixCalcResp.add("from(id): " + citiesFrom.get(i).getId()
@@ -122,16 +119,15 @@ public class CalculatorResource {
                     return Response.status(400).build();
                 }
             }
-            return Response.ok()
-                    .entity(matrixCalcResp)
-                    .build();
         }
 
-        //returns both if type is not defined or any word but "matrix"/"straight"
+        List<String> response = new ArrayList<>();
+        response.addAll(crowFlightResp);
+        response.addAll(matrixCalcResp);
+
         return Response
                 .ok()
-                .entity(crowFlightResp)
-                .entity(matrixCalcResp)
+                .entity(response)
                 .build();
     }
 
@@ -142,37 +138,22 @@ public class CalculatorResource {
         CityDataAccess cityDAO = CityDataAccess.getInstance();
         DistanceDataAccess distanceDAO = DistanceDataAccess.getInstance();
 
-        StringBuilder file = new StringBuilder();
-
         //preparing unmarshaller
         JAXBContext context = JAXBContext.newInstance(CityAndDistance.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
 
-        Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-
-        //saving file name if needed
-//        String fileName = uploadForm.get("fileName").get(0).getBodyAsString();
-
-        List<InputPart> inputParts = uploadForm.get("Attachment");
-
-        //building file
-        for (InputPart inputPart : inputParts) {
-            try {
-                @SuppressWarnings("unused")
-                MultivaluedMap<String, String> header = inputPart.getHeaders();
-
-                InputStream in = inputPart.getBody(InputStream.class, null);
-
-                file.append(Arrays.toString(IOUtils.toByteArray(in)));
-            } catch (IOException e) {
-                e.printStackTrace();
-                return Response.status(400).build();
-            }
+        //preparing inputstream
+        InputPart inputPart = input.getFormDataMap().get("file").get(0);
+        InputStream uploadedInputStream;
+        try {
+            uploadedInputStream = inputPart.getBody(InputStream.class, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Response.status(400).build();
         }
 
         //unmarshal uploaded file
-        CityAndDistance container = (CityAndDistance) unmarshaller.unmarshal(
-                    new StringReader(file.toString()));
+        CityAndDistance container = (CityAndDistance) unmarshaller.unmarshal(uploadedInputStream);
 
         for (CityEntity city : container.getCities()) {
             cityDAO.save(city);
