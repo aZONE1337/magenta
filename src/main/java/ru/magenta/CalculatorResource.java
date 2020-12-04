@@ -143,7 +143,7 @@ public class CalculatorResource {
         Unmarshaller unmarshaller = context.createUnmarshaller();
 
         //preparing inputstream
-        InputPart inputPart = input.getFormDataMap().get("file").get(0);
+        InputPart inputPart = input.getFormDataMap().get("").get(0);
         InputStream uploadedInputStream;
         try {
             uploadedInputStream = inputPart.getBody(InputStream.class, null);
