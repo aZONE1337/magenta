@@ -14,4 +14,4 @@ parameters:
 ### /api/calculator/upload
 parameters:
 * file.xml
-<br> Saves data from uploaded XML file in database. XML file has to have <citiesAndDistances> as root, list cities first and then list distances.</br>
+<br> Saves data from uploaded XML file in database. XML file has to have "citiesAndDistances" bracket as root, then list of cities and then list distances.</br>
