@@ -15,3 +15,4 @@ parameters:
 parameters:
 * file.xml
 <br> Saves data from uploaded XML file in database. XML file has to have "citiesAndDistances" bracket as root, then list of cities and then list distances.</br>
+<br>example in src/main/resources/test.xml</br>
